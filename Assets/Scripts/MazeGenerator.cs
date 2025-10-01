@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using Shared;
 using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour
 {
     [SerializeField] private int _width = 20;
     [SerializeField] private int _height = 20;
+    [SerializeField] private float _tileSize = 6f;
 
     private Cell[,] grid;
 
@@ -14,7 +16,7 @@ public class MazeGenerator : MonoBehaviour
         private bool _visited = false;
         // up, right, down, left
         private bool[] _walls = { true, true, true, true };
-        private GameObject floorObj;
+        private GameObject _floorObj;
 
         public int X
         {
@@ -39,6 +41,12 @@ public class MazeGenerator : MonoBehaviour
             get => _walls;
         }
 
+        public GameObject Floor
+        {
+            get => _floorObj;
+            set => _floorObj = value;
+        }
+
         public Cell(int x, int y)
         {
             _x = x;
@@ -49,33 +57,45 @@ public class MazeGenerator : MonoBehaviour
     private void Start()
     {
         GenerateMaze();
+        BuildMazeWithTiles();
         PlaceObjects();
     }
 
     private void BuildMazeWithTiles()
     {
-        for (int x = 0; x < _width; x++)
+        for (int x = 0; x <= _width; x++)
         {
-            for (int y = 0; y < _height; y++)
+            for (int y = 0; y <= _height; y++)
             {
-                Cell cell = grid[x, y];
-                Vector3 pos = new (x, 0, y);
+                Vector3 pos = new(x * _tileSize, 0, y * _tileSize);
 
-                // GameObject tileObj = Instantiate(tilePrefab, pos, Quaternion.identity);
-                // cell.floorObj = tileObj; // pour placer les objets dessus
+                GameObject tileObj = AssetManager.SpawnTile(pos);
+
+                if (x == _width || y == _height)
+                {
+                    Transform _wallLeft = tileObj.transform.Find("WallLeft");
+                    Transform _wallBottom = tileObj.transform.Find("WallBottom");
+                    _wallLeft.gameObject.SetActive(false);
+                    _wallBottom.gameObject.SetActive(false);
+
+                    continue;
+                }
+
+                Cell cell = grid[x, y];
+                cell.Floor = tileObj; // pour placer les objets dessus
 
                 // Références aux murs dans le prefab
-                // Transform wallLeft = tileObj.transform.Find("WallLeft");
-                // Transform wallBottom = tileObj.transform.Find("WallBottom");
+                Transform wallLeft = tileObj.transform.Find("WallLeft");
+                Transform wallBottom = tileObj.transform.Find("WallBottom");
 
                 // Désactivation selon walls[]
                 // mur gauche
-                /*if (!cell.Walls[3] && wallLeft != null)
+                if (!cell.Walls[3] && wallLeft != null)
                     wallLeft.gameObject.SetActive(false);
 
                 // mur bas
                 if (!cell.Walls[2] && wallBottom != null)
-                    wallBottom.gameObject.SetActive(false);*/
+                    wallBottom.gameObject.SetActive(false);
             }
         }
     }
@@ -110,9 +130,6 @@ public class MazeGenerator : MonoBehaviour
                 stack.Pop();
             }
         }
-
-        // foreach (var cell in grid)
-        //     cell
     }
 
     private List<Cell> GetDeadEnds()
@@ -139,14 +156,14 @@ public class MazeGenerator : MonoBehaviour
         if (deadEnds.Count > 0)
         {
             Cell keyCell = deadEnds[Random.Range(0, deadEnds.Count)];
-            // Inst
+            AssetManager.SpawnKey(keyCell.Floor.transform.position + Vector3.up);
         }
 
         foreach (var cell in grid)
         {
             if (!deadEnds.Contains(cell) && Random.value < 0.05f)
             {
-                // Inst
+                AssetManager.SpawnBonus(cell.Floor.transform.position + Vector3.up);
             }
         }
     }
