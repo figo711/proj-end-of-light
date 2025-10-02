@@ -116,8 +116,8 @@ public class PlayerMovement : MonoBehaviour
         {
             // Réinitialise la hauteur et les vitesses aux valeurs par défaut
             characterController.height = defaultHeight;
-            walkSpeed = 6f;
-            runSpeed = 12f;
+            walkSpeed = 5f;
+            runSpeed = 10f;
         }
 
         // Applique le déplacement final (Time.deltaTime pour rendre indépendant du framerate)
