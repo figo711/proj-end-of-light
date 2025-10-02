@@ -73,11 +73,6 @@ public class MazeGenerator : MonoBehaviour
 
                 if (x == _width || y == _height)
                 {
-                    Transform _wallLeft = tileObj.transform.Find("WallLeft");
-                    Transform _wallBottom = tileObj.transform.Find("WallBottom");
-                    _wallLeft.gameObject.SetActive(false);
-                    _wallBottom.gameObject.SetActive(false);
-
                     continue;
                 }
 
