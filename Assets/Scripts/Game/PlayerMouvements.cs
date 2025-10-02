@@ -98,6 +98,22 @@ public class PlayerMovement : MonoBehaviour
         // Construction du vecteur de mouvement horizontal (X/Z)
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
+        // Rotation de la caméra et du corps si le mouvement est autorisé
+        if (canMove)
+        {
+            var lookInput = _lookAction.ReadValue<Vector2>();
+            // Pitch (regard haut/bas) : inversé par convention (souris vers le haut -> regard vers le bas)
+            rotationX += - lookInput.y * lookSpeed;
+            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit); // clamp pour éviter de se retourner
+            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+
+            // Yaw (rotation autour de l'axe Y) : applique la rotation horizontale au transform du joueur
+            transform.rotation *= Quaternion.Euler(0, lookInput.x * lookSpeed, 0);
+        }
+    }
+
+    void FixedUpdate()
+    {
         // Application de la gravité lorsque le joueur n'est pas au sol
         if (!characterController.isGrounded)
         {
@@ -122,18 +138,5 @@ public class PlayerMovement : MonoBehaviour
 
         // Applique le déplacement final (Time.deltaTime pour rendre indépendant du framerate)
         characterController.Move(moveDirection * Time.deltaTime);
-
-        // Rotation de la caméra et du corps si le mouvement est autorisé
-        if (canMove)
-        {
-            var lookInput = _lookAction.ReadValue<Vector2>();
-            // Pitch (regard haut/bas) : inversé par convention (souris vers le haut -> regard vers le bas)
-            rotationX += - lookInput.y * lookSpeed;
-            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit); // clamp pour éviter de se retourner
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-
-            // Yaw (rotation autour de l'axe Y) : applique la rotation horizontale au transform du joueur
-            transform.rotation *= Quaternion.Euler(0, lookInput.x * lookSpeed, 0);
-        }
     }
 }
