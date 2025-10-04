@@ -14,9 +14,8 @@ public class MazeGenerator : MonoBehaviour
     {
         private int _x, _y;
         private bool _visited = false;
-        // up, right, down, left
-        private bool[] _walls = { true, true, true, true };
-        private bool _wallLeft, _wallBottom;
+        private bool _wallLeft = true, _wallBottom = true;
+        private bool _isExit = false;
         private GameObject _floorObj;
 
         public int X
@@ -37,21 +36,22 @@ public class MazeGenerator : MonoBehaviour
             set => _visited = value;
         }
 
-        public bool[] Walls
-        {
-            get => _walls;
-        }
-
         public bool WallLeft
         {
             get => _wallLeft;
-            set => _wallLeft = true;
+            set => _wallLeft = value;
         }
 
         public bool WallBottom
         {
             get => _wallBottom;
-            set => _wallBottom = true;
+            set => _wallBottom = value;
+        }
+
+        public bool IsExit
+        {
+            get => _isExit;
+            set => _isExit = value;
         }
 
         public GameObject Floor
@@ -138,6 +138,8 @@ public class MazeGenerator : MonoBehaviour
                 stack.Pop();
             }
         }
+
+        CreateExit(grid[_width - 1, _height - 1]);
     }
 
     private List<Cell> GetDeadEnds()
@@ -174,7 +176,6 @@ public class MazeGenerator : MonoBehaviour
         return deadEnds;
     }
 
-
     private void PlaceObjects()
     {
         List<Cell> deadEnds = GetDeadEnds();
@@ -182,8 +183,10 @@ public class MazeGenerator : MonoBehaviour
         print("DeadEnds: " + deadEnds.Count.ToString());
         if (deadEnds.Count > 0)
         {
-            if (deadEnds.Count >= 3) {
-                for (int i = 0; i < 3; i++) {
+            if (deadEnds.Count >= 3)
+            {
+                for (int i = 0; i < 3; i++)
+                {
                     int keyIndex = Random.Range(0, deadEnds.Count);
                     Cell keyCell = deadEnds[keyIndex];
                     AssetManager.SpawnKey(keyCell.Floor.transform.position + Vector3.up);
@@ -253,6 +256,29 @@ public class MazeGenerator : MonoBehaviour
         else if (dx == 0 && dy == -1)
         {
             a.WallBottom = false;
+        }
+    }
+
+    private void CreateExit(Cell exitCell)
+    {
+        exitCell.IsExit = true;
+
+        // On essaie de choisir un bord extérieur
+        if (exitCell.X == 0)
+            exitCell.WallLeft = false;
+        else if (exitCell.X == _width - 1)
+            grid[exitCell.X - 1, exitCell.Y].WallLeft = false;
+        else if (exitCell.Y == 0)
+            exitCell.WallBottom = false;
+        else if (exitCell.Y == _height - 1)
+            grid[exitCell.X, exitCell.Y - 1].WallBottom = false;
+        else
+        {
+            // Si la plus éloignée n’est pas sur un bord, on l'ouvre sur le bord le plus proche
+            if (exitCell.X < _width / 2)
+                exitCell.WallLeft = false;
+            else
+                grid[exitCell.X - 1, exitCell.Y].WallLeft = false;
         }
     }
 }
