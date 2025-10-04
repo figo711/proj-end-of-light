@@ -16,6 +16,7 @@ public class MazeGenerator : MonoBehaviour
         private bool _visited = false;
         // up, right, down, left
         private bool[] _walls = { true, true, true, true };
+        private bool _wallLeft, _wallBottom;
         private GameObject _floorObj;
 
         public int X
@@ -39,6 +40,18 @@ public class MazeGenerator : MonoBehaviour
         public bool[] Walls
         {
             get => _walls;
+        }
+
+        public bool WallLeft
+        {
+            get => _wallLeft;
+            set => _wallLeft = true;
+        }
+
+        public bool WallBottom
+        {
+            get => _wallBottom;
+            set => _wallBottom = true;
         }
 
         public GameObject Floor
@@ -85,11 +98,11 @@ public class MazeGenerator : MonoBehaviour
 
                 // Désactivation selon walls[]
                 // mur gauche
-                if (!cell.Walls[3] && wallLeft != null)
+                if (!cell.WallLeft && wallLeft != null)
                     wallLeft.gameObject.SetActive(false);
 
                 // mur bas
-                if (!cell.Walls[2] && wallBottom != null)
+                if (!cell.WallBottom && wallBottom != null)
                     wallBottom.gameObject.SetActive(false);
             }
         }
@@ -133,9 +146,26 @@ public class MazeGenerator : MonoBehaviour
 
         foreach (var cell in grid)
         {
+            if (cell.X == 0 && cell.Y == 0)
+                continue; // éviter clé au départ
+
             int openSides = 0;
-            foreach (bool wall in cell.Walls)
-                if (!wall) openSides++;
+
+            // Gauche
+            if (cell.X > 0 && !cell.WallLeft)
+                openSides++;
+
+            // Droite (dépend du voisin)
+            if (cell.X < _width - 1 && !grid[cell.X + 1, cell.Y].WallLeft)
+                openSides++;
+
+            // Bas
+            if (cell.Y > 0 && !cell.WallBottom)
+                openSides++;
+
+            // Haut (dépend du voisin)
+            if (cell.Y < _height - 1 && !grid[cell.X, cell.Y + 1].WallBottom)
+                openSides++;
 
             if (openSides == 1)
                 deadEnds.Add(cell);
@@ -144,14 +174,24 @@ public class MazeGenerator : MonoBehaviour
         return deadEnds;
     }
 
+
     private void PlaceObjects()
     {
         List<Cell> deadEnds = GetDeadEnds();
 
+        print("DeadEnds: " + deadEnds.Count.ToString());
         if (deadEnds.Count > 0)
         {
-            Cell keyCell = deadEnds[Random.Range(0, deadEnds.Count)];
-            AssetManager.SpawnKey(keyCell.Floor.transform.position + Vector3.up);
+            if (deadEnds.Count >= 3) {
+                for (int i = 0; i < 3; i++) {
+                    int keyIndex = Random.Range(0, deadEnds.Count);
+                    Cell keyCell = deadEnds[keyIndex];
+                    AssetManager.SpawnKey(keyCell.Floor.transform.position + Vector3.up);
+                    deadEnds.RemoveAt(keyIndex);
+                }
+            }
+            // Cell keyCell = deadEnds[Random.Range(0, deadEnds.Count)];
+            // AssetManager.SpawnKey(keyCell.Floor.transform.position + Vector3.up);
         }
 
         foreach (var cell in grid)
@@ -197,26 +237,22 @@ public class MazeGenerator : MonoBehaviour
         // b est à droite de a
         if (dx == 1 && dy == 0)
         {
-            a.Walls[1] = false; // droite de a
-            b.Walls[3] = false; // gauche de b
+            b.WallLeft = false;
         }
         // b est à gauche de a
         else if (dx == -1 && dy == 0)
         {
-            a.Walls[3] = false; // gauche de a
-            b.Walls[1] = false; // droite de b
+            a.WallLeft = false;
         }
         // b est en haut de a
         else if (dx == 0 && dy == 1)
         {
-            a.Walls[0] = false; // haut de a
-            b.Walls[2] = false; // bas de b
+            b.WallBottom = false;
         }
         // b est en bas de a
         else if (dx == 0 && dy == -1)
         {
-            a.Walls[2] = false; // bas de a
-            b.Walls[0] = false; // haut de b
+            a.WallBottom = false;
         }
     }
 }
