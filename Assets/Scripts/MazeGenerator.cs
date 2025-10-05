@@ -1,9 +1,14 @@
 using System.Collections.Generic;
 using Shared;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour
 {
+    [SerializeField] private NavMeshSurface navMeshSurface;
+
+    [SerializeField] private Transform tileParent;
+
     [SerializeField] private int _width = 20;
     [SerializeField] private int _height = 20;
     [SerializeField] private float _tileSize = 6f;
@@ -71,6 +76,9 @@ public class MazeGenerator : MonoBehaviour
     {
         GenerateMaze();
         BuildMazeWithTiles();
+
+        navMeshSurface.BuildNavMesh();
+
         PlaceObjects();
     }
 
@@ -82,10 +90,28 @@ public class MazeGenerator : MonoBehaviour
             {
                 Vector3 pos = new(x * _tileSize, 0, y * _tileSize);
 
-                GameObject tileObj = AssetManager.SpawnTile(pos);
+                GameObject tileObj = AssetManager.SpawnTile(pos, tileParent);
 
                 if (x == _width || y == _height)
                 {
+                    if (y == _height)
+                    {
+                        tileObj.transform.Find("WallLeft")
+                            .gameObject.SetActive(false);
+                    }
+
+                    if (x == _width)
+                    {
+                        tileObj.transform.Find("WallBottom")
+                            .gameObject.SetActive(false);
+                    }
+
+                    if (x == _width && y == _height - 1)
+                    {
+                        tileObj.transform.Find("WallLeft")
+                            .gameObject.SetActive(false);
+                    }
+
                     continue;
                 }
 
@@ -138,8 +164,6 @@ public class MazeGenerator : MonoBehaviour
                 stack.Pop();
             }
         }
-
-        CreateExit(grid[_width - 1, _height - 1]);
     }
 
     private List<Cell> GetDeadEnds()
@@ -189,7 +213,8 @@ public class MazeGenerator : MonoBehaviour
                 {
                     int keyIndex = Random.Range(0, deadEnds.Count);
                     Cell keyCell = deadEnds[keyIndex];
-                    AssetManager.SpawnKey(keyCell.Floor.transform.position + Vector3.up);
+                    AssetManager.SpawnKey(
+                        keyCell.Floor.transform.position + Vector3.up, tileParent);
                     deadEnds.RemoveAt(keyIndex);
                 }
             }
@@ -199,9 +224,10 @@ public class MazeGenerator : MonoBehaviour
 
         foreach (var cell in grid)
         {
-            if (!deadEnds.Contains(cell) && Random.value < 0.05f)
+            if (deadEnds.Contains(cell) && Random.value < 0.75f)
             {
-                AssetManager.SpawnBonus(cell.Floor.transform.position + Vector3.up);
+                AssetManager.SpawnBonus(
+                    cell.Floor.transform.position + Vector3.up, tileParent);
             }
         }
     }
@@ -256,29 +282,6 @@ public class MazeGenerator : MonoBehaviour
         else if (dx == 0 && dy == -1)
         {
             a.WallBottom = false;
-        }
-    }
-
-    private void CreateExit(Cell exitCell)
-    {
-        exitCell.IsExit = true;
-
-        // On essaie de choisir un bord extérieur
-        if (exitCell.X == 0)
-            exitCell.WallLeft = false;
-        else if (exitCell.X == _width - 1)
-            grid[exitCell.X - 1, exitCell.Y].WallLeft = false;
-        else if (exitCell.Y == 0)
-            exitCell.WallBottom = false;
-        else if (exitCell.Y == _height - 1)
-            grid[exitCell.X, exitCell.Y - 1].WallBottom = false;
-        else
-        {
-            // Si la plus éloignée n’est pas sur un bord, on l'ouvre sur le bord le plus proche
-            if (exitCell.X < _width / 2)
-                exitCell.WallLeft = false;
-            else
-                grid[exitCell.X - 1, exitCell.Y].WallLeft = false;
         }
     }
 }
