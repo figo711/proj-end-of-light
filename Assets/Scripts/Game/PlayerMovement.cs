@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace Game
 {
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovementOld : MonoBehaviour
     {
         [Header("Input")]
         [SerializeField] private InputActionAsset inputActionAsset;
