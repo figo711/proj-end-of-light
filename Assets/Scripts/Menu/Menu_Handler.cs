@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Shared;
 
 namespace Menu
 {
@@ -13,7 +14,7 @@ namespace Menu
         {
             startBtn.onClick.AddListener(() =>
             {
-                // Scene_Handler.SwitchTo(Scenes.GAME);
+                Scene_Handler.Instance.SwitchTo(Scenes.Game);
                 print("DBG: START GAME");
             });
 

@@ -91,6 +91,13 @@ public class PlayerMovement : MonoBehaviour
         _sprintAction.Disable();
     }
 
+    private void OnDestroy()
+    {
+        DOTween.KillAll();
+        _sprintAction.performed -= OnSprint;
+        _sprintAction.canceled -= OnSprint;
+    }
+
     void Start()
     {
         // Récupère le CharacterController sur le GameObject et verrouille le curseur

@@ -1,4 +1,3 @@
-using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,10 +11,12 @@ namespace Loading
 
         private void Start()
         {
-            barFG.DOFillAmount(0.99f, 3f).OnUpdate(() =>
-            {
-                percentTxt.text = $"{Mathf.RoundToInt(barFG.fillAmount * 100)}%";
-            });
+        }
+
+        public void UpdateBar(float value)
+        {
+            barFG.fillAmount = value;
+            percentTxt.text = $"{Mathf.RoundToInt(barFG.fillAmount * 100)}%";
         }
     }
 }

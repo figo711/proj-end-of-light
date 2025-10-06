@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Shared;
 
 namespace Game
 {
@@ -44,8 +45,16 @@ namespace Game
 
             quitBtn.onClick.AddListener(() =>
             {
-                print("Scene_Handler.SwitchTo(Scenes.MENU);");
+                Time.timeScale = 1f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                Scene_Handler.Instance.SwitchTo(Scenes.Menu);
             });
+        }
+
+        private void OnDestroy()
+        {
+            _pauseAction.performed -= OnPressPause;
         }
 
         private void OnEnable()
