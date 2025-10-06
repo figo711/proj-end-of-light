@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using Shared;
 using Unity.AI.Navigation;
 using UnityEngine;
+using Game;
 
 public class MazeGenerator : MonoBehaviour
 {
     [SerializeField] private NavMeshSurface navMeshSurface;
+    [SerializeField] private EnemyAgent enemyAgent;
 
     [SerializeField] private Transform tileParent;
 
@@ -80,6 +82,8 @@ public class MazeGenerator : MonoBehaviour
         navMeshSurface.BuildNavMesh();
 
         PlaceObjects();
+
+        enemyAgent.Setup();
     }
 
     private void BuildMazeWithTiles()
