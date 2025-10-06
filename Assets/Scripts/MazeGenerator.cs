@@ -110,6 +110,8 @@ public class MazeGenerator : MonoBehaviour
                     {
                         tileObj.transform.Find("WallLeft")
                             .gameObject.SetActive(false);
+                        tileObj.transform.Find("ExitLeft")
+                            .gameObject.SetActive(true);
                     }
 
                     continue;
