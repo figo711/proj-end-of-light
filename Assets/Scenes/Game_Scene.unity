@@ -540,7 +540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &250900151
 Transform:
   m_ObjectHideFlags: 0
@@ -2290,6 +2290,7 @@ GameObject:
   - component: {fileID: 1055933334}
   - component: {fileID: 1055933333}
   - component: {fileID: 1055933332}
+  - component: {fileID: 1055933335}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2362,6 +2363,18 @@ Transform:
   - {fileID: 1823877442}
   m_Father: {fileID: 1088421940}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1055933335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055933331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f856cef90a9b7865ca55bb87a23667b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.KeyCollector
 --- !u!1 &1088421939
 GameObject:
   m_ObjectHideFlags: 0
