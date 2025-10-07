@@ -6,15 +6,17 @@ TagManager:
   tags:
   - Key
   - ExitDoor
+  - Interactable
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactable
   - Water
   - UI
   - Ground
   - Ceil
+  - holdLayer
   - 
   - 
   - 
