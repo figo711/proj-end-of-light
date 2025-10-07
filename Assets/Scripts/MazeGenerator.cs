@@ -6,6 +6,7 @@ using Game;
 
 public class MazeGenerator : MonoBehaviour
 {
+    [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private MazeLightController mazeLightController;
     [SerializeField] private NavMeshSurface navMeshSurface;
     [SerializeField] private EnemyAgent enemyAgent;
@@ -88,6 +89,7 @@ public class MazeGenerator : MonoBehaviour
         mazeLightController.InitializeLights(lights);
 
         enemyAgent.Setup();
+        playerInteract.Setup();
     }
 
     private void BuildMazeWithTiles()

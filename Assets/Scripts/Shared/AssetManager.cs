@@ -7,6 +7,7 @@ namespace Shared
         [SerializeField] private GameObject _tilePrefab;
         [SerializeField] private GameObject _bonusPrefab;
         [SerializeField] private GameObject _keyPrefab;
+        [SerializeField] private GameObject _stonePrefab;
 
         public static AssetManager Instance { get; private set; }
 
@@ -36,6 +37,13 @@ namespace Shared
             var pf = Instance._keyPrefab;
             GameObject bonusObj = Instantiate(pf, position, Quaternion.identity, parent);
             return bonusObj;
+        }
+
+        public static GameObject SpawnStone(Vector3 position, Transform parent = null)
+        {
+            var pf = Instance._stonePrefab;
+            GameObject stoneObj = Instantiate(pf, position, Quaternion.identity, parent);
+            return stoneObj;
         }
 
         private void Awake()

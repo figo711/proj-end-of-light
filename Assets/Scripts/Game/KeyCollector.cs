@@ -6,6 +6,8 @@ namespace Game
     {
         private int keyCount;
 
+        public int KeyCount => keyCount;
+
         private void Start()
         {
             keyCount = 0;
@@ -18,6 +20,7 @@ namespace Game
                 other.enabled = false;
                 other.gameObject.SetActive(false);
                 keyCount += 1;
+                HUD_Handler.Instance.UpdateKeys(keyCount);
             }
         }
     }
