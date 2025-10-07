@@ -17,6 +17,7 @@ public class MazeGenerator : MonoBehaviour
     [SerializeField] private float _tileSize = 6f;
 
     private Cell[,] grid;
+    private Light[] lights;
 
     class Cell
     {
@@ -84,13 +85,15 @@ public class MazeGenerator : MonoBehaviour
 
         PlaceObjects();
 
-        // mazeLightController.InitializeLights();
+        mazeLightController.InitializeLights(lights);
 
         enemyAgent.Setup();
     }
 
     private void BuildMazeWithTiles()
     {
+        lights = new Light[_width * _height];
+
         for (int x = 0; x <= _width; x++)
         {
             for (int y = 0; y <= _height; y++)
@@ -126,6 +129,8 @@ public class MazeGenerator : MonoBehaviour
 
                 Cell cell = grid[x, y];
                 cell.Floor = tileObj; // pour placer les objets dessus
+                lights[10 * x + y] = tileObj.transform.Find("Ceil")
+                    .GetComponentInChildren<Light>();
 
                 // Références aux murs dans le prefab
                 Transform wallLeft = tileObj.transform.Find("WallLeft");
