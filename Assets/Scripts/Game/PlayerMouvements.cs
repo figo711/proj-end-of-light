@@ -51,6 +51,9 @@ public class PlayerMovement : MonoBehaviour
     private bool canMove = true;
     private bool canRun = true;
 
+    private bool _isRunning;
+    public bool IsRunning => _isRunning;
+
 
     void Awake()
     {
@@ -116,13 +119,13 @@ public class PlayerMovement : MonoBehaviour
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         // Vérifie si le joueur maintient la touche shift pour courir
-        bool isRunning = _sprintAction.IsPressed() && canRun;
+        _isRunning = _sprintAction.IsPressed() && canRun;
 
         var moveInput = _moveAction.ReadValue<Vector2>();
         // Calcul de la vitesse sur les axes X et Y locaux (Vertical -> forward/back, Horizontal -> right/left)
         // Si canMove est false, les vitesses sont forcées à 0
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * moveInput.y : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * moveInput.x : 0;
+        float curSpeedX = canMove ? (_isRunning ? runSpeed : walkSpeed) * moveInput.y : 0;
+        float curSpeedY = canMove ? (_isRunning ? runSpeed : walkSpeed) * moveInput.x : 0;
 
         // Sauvegarde de la composante Y du mouvement (pour conserver la gravité/saut entre les frames)
         float movementDirectionY = moveDirection.y;
@@ -133,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
         // Rotation de la caméra et du corps si le mouvement est autorisé
         if (canMove)
         {
-            if (isRunning)
+            if (_isRunning)
             {
                 _staminaValue -= Time.deltaTime;
                 HUD_Handler.Instance.UpdateStamina(_staminaValue);
@@ -201,7 +204,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (ctx.performed && _staminaValue > 0.5f)
         {
-            playerCamera.DOFieldOfView(85f, 0.5f);
+            playerCamera.DOFieldOfView(75f, 0.5f);
         }
         else if (ctx.canceled)
         {

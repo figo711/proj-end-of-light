@@ -556,55 +556,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 239364206}
   m_CullTransparentMesh: 1
---- !u!1 &250900150
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 250900151}
-  - component: {fileID: 250900152}
-  m_Layer: 0
-  m_Name: LightManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &250900151
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 250900150}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1327435270}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &250900152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 250900150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48530d9d26548f14cb2e427ccd141ab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.MazeLightController
-  _speed: 5
-  _scale: 1
-  _intensityMin: 1
-  _intensityMax: 10
-  _transitionSpeed: 2
 --- !u!1 &270061436
 GameObject:
   m_ObjectHideFlags: 0
@@ -851,7 +802,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.60645056, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.22352941, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1615,7 +1566,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MazeGenerator
   playerInteract: {fileID: 1055933336}
-  mazeLightController: {fileID: 250900152}
   navMeshSurface: {fileID: 862481941}
   enemyAgent: {fileID: 926443394}
   tileParent: {fileID: 862481940}
@@ -2150,7 +2100,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 110698315554441234, guid: 523601a88a86b244890b2eafd5763021, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2211,7 +2162,7 @@ GameObject:
   - component: {fileID: 926443394}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2226,7 +2177,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 54, y: 2, z: 54}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1619574449}
@@ -2241,8 +2192,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 926443391}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
-  m_Speed: 5
+  m_Radius: 1.5
+  m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -2266,6 +2217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb8752bff5ba39fc84d0f5e9ac24646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAgent
+  pMovement: {fileID: 1055933332}
 --- !u!1001 &978094119
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2397,6 +2349,7 @@ GameObject:
   - component: {fileID: 1055933335}
   - component: {fileID: 1055933336}
   - component: {fileID: 1055933337}
+  - component: {fileID: 1055933338}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2495,7 +2448,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.PlayerInteract
   inputActionAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   keyCollector: {fileID: 1055933335}
+  objectHandler: {fileID: 1055933337}
+  hpHandler: {fileID: 1055933338}
+  pMovement: {fileID: 1055933332}
   interactRange: 5
+  collectLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &1055933337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2511,6 +2470,19 @@ MonoBehaviour:
   inputActionAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   objectHolder: {fileID: 121507287}
   throwForce: 750
+--- !u!114 &1055933338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055933331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b6ba355c34f8e117a6fb3bb49982090, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HP_Handler
+  pMovement: {fileID: 1055933332}
 --- !u!1 &1088421939
 GameObject:
   m_ObjectHideFlags: 0
@@ -2749,7 +2721,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0.22478151, a: 1}
+  m_Color: {r: 0.05490196, g: 0.44705883, b: 0.8784314, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2936,6 +2908,7 @@ MonoBehaviour:
   keysText: {fileID: 1298533556}
   stonesBar: {fileID: 1359701320}
   stonesText: {fileID: 1521435791}
+  hpBar: {fileID: 1246229192}
   indicationText: {fileID: 1382626760}
 --- !u!1 &1298533554
 GameObject:
@@ -3106,7 +3079,6 @@ Transform:
   - {fileID: 667785545}
   - {fileID: 1471675185}
   - {fileID: 1278993040}
-  - {fileID: 250900151}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1359701318
@@ -3763,6 +3735,9 @@ MonoBehaviour:
   continueBtn: {fileID: 978094121}
   optionsBtn: {fileID: 347686211}
   quitBtn: {fileID: 169342822}
+  endPanel: {fileID: 1183501271}
+  endGameText: {fileID: 485364899}
+  endQuitBtn: {fileID: 1919744548}
 --- !u!1 &1489743717
 GameObject:
   m_ObjectHideFlags: 0
@@ -4021,7 +3996,7 @@ GameObject:
   - component: {fileID: 1619574446}
   m_Layer: 0
   m_Name: Enemy Visual
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4041,7 +4016,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4628,6 +4603,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1823877441}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1919744548 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3927431127031927825, guid: 9284001789549ed49a40022dccdc3a3c, type: 3}
+  m_PrefabInstance: {fileID: 1384630494}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

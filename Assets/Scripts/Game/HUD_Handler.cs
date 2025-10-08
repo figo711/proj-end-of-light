@@ -19,6 +19,9 @@ namespace Game
         [SerializeField] private Image stonesBar;
         [SerializeField] private TextMeshProUGUI stonesText;
 
+        [Header("HP")]
+        [SerializeField] private Image hpBar;
+
         [Header("Indication")]
         [SerializeField] private TextMeshProUGUI indicationText;
 
@@ -31,6 +34,11 @@ namespace Game
             keysText.text = "0 / 3";
             stonesBar.fillAmount = 5f;
             stonesText.text = "5 / 5";
+        }
+
+        public void UpdateHP(int value)
+        {
+            hpBar.fillAmount = (float)value / HP_Handler.MAX_HP;
         }
 
         public void UpdateStamina(float value)

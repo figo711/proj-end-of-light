@@ -7,7 +7,6 @@ using Game;
 public class MazeGenerator : MonoBehaviour
 {
     [SerializeField] private PlayerInteract playerInteract;
-    [SerializeField] private MazeLightController mazeLightController;
     [SerializeField] private NavMeshSurface navMeshSurface;
     [SerializeField] private EnemyAgent enemyAgent;
 
@@ -18,7 +17,6 @@ public class MazeGenerator : MonoBehaviour
     [SerializeField] private float _tileSize = 6f;
 
     private Cell[,] grid;
-    private Light[] lights;
 
     class Cell
     {
@@ -86,16 +84,12 @@ public class MazeGenerator : MonoBehaviour
 
         PlaceObjects();
 
-        mazeLightController.InitializeLights(lights);
-
         enemyAgent.Setup();
         playerInteract.Setup();
     }
 
     private void BuildMazeWithTiles()
     {
-        lights = new Light[_width * _height];
-
         for (int x = 0; x <= _width; x++)
         {
             for (int y = 0; y <= _height; y++)
@@ -131,8 +125,20 @@ public class MazeGenerator : MonoBehaviour
 
                 Cell cell = grid[x, y];
                 cell.Floor = tileObj; // pour placer les objets dessus
-                lights[10 * x + y] = tileObj.transform.Find("Ceil")
-                    .GetComponentInChildren<Light>();
+                var tile = cell.Floor.GetComponentInChildren<LightController>();
+                if (tile)
+                {
+                    if (x == 0 || y == 0 || x == _width - 1 || y == _height - 1)
+                    {
+                        tile.LightOnDuration = Random.Range(80f, 100f);
+                        tile.LightOffDuration = Random.Range(10f, 15f);
+                    }
+                    else
+                    {
+                        tile.LightOnDuration = Random.Range(5f, 10f);
+                        tile.LightOffDuration = Random.Range(2f, 4f);
+                    }
+                }
 
                 // Références aux murs dans le prefab
                 Transform wallLeft = tileObj.transform.Find("WallLeft");
@@ -232,10 +238,25 @@ public class MazeGenerator : MonoBehaviour
                     AssetManager.SpawnKey(
                         keyCell.Floor.transform.position + Vector3.up, tileParent);
                     deadEnds.RemoveAt(keyIndex);
+
+                    var tile = keyCell.Floor.GetComponentInChildren<LightController>();
+                    if (tile)
+                    {
+                        tile.LightOnDuration = Random.Range(80f, 100f);
+                        tile.LightOffDuration = Random.Range(10f, 15f);
+                    }
                 }
             }
-            // Cell keyCell = deadEnds[Random.Range(0, deadEnds.Count)];
-            // AssetManager.SpawnKey(keyCell.Floor.transform.position + Vector3.up);
+
+            foreach (var cell in deadEnds)
+            {
+                var tile = cell.Floor.GetComponentInChildren<LightController>();
+                if (tile)
+                {
+                    tile.LightOnDuration = Random.Range(40f, 50f);
+                    tile.LightOffDuration = Random.Range(5f, 10f);
+                }
+            }
         }
 
         foreach (var cell in grid)

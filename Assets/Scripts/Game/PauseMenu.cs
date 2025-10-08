@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Shared;
+using TMPro;
 
 namespace Game
 {
@@ -19,9 +20,15 @@ namespace Game
         [SerializeField] private Button optionsBtn;
         [SerializeField] private Button quitBtn;
 
+        [Header("End Game")]
+        [SerializeField] private GameObject endPanel;
+        [SerializeField] private TextMeshProUGUI endGameText;
+        [SerializeField] private Button endQuitBtn;
+
         private InputAction _pauseAction;
 
         private bool _isPause;
+        private bool _isEnd;
 
         public bool IsPause => _isPause;
 
@@ -43,13 +50,16 @@ namespace Game
                 print("Panels_Handler.ShowPanel(Panel.OPTIONS);");
             });
 
-            quitBtn.onClick.AddListener(() =>
-            {
-                Time.timeScale = 1f;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                Scene_Handler.Instance.SwitchTo(Scenes.Menu);
-            });
+            quitBtn.onClick.AddListener(OnClickQuit);
+            endQuitBtn.onClick.AddListener(OnClickQuit);
+        }
+
+        private void OnClickQuit()
+        {
+            Time.timeScale = 1f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Scene_Handler.Instance.SwitchTo(Scenes.Menu);
         }
 
         private void OnDestroy()
@@ -69,6 +79,7 @@ namespace Game
 
         private void OnPressPause(InputAction.CallbackContext ctx)
         {
+            if (_isEnd) return;
             if (ctx.performed)
             {
                 _isPause = !_isPause;
@@ -83,6 +94,19 @@ namespace Game
             Cursor.visible = IsPause;
             menuPanel.SetActive(IsPause);
             bgOverlay.SetActive(IsPause);
+        }
+
+        public void EndGame(bool win)
+        {
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            _isPause = true;
+            _isEnd = true;
+
+            endPanel.SetActive(true);
+            bgOverlay.SetActive(true);
+            endGameText.text = win ? "WIN !" : "LOSE";
         }
     }
 }
