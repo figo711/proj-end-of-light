@@ -2208,10 +2208,11 @@ GameObject:
   m_Component:
   - component: {fileID: 926443392}
   - component: {fileID: 926443393}
+  - component: {fileID: 926443395}
   - component: {fileID: 926443394}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2266,6 +2267,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb8752bff5ba39fc84d0f5e9ac24646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAgent
+--- !u!54 &926443395
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926443391}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &978094119
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2397,6 +2425,7 @@ GameObject:
   - component: {fileID: 1055933335}
   - component: {fileID: 1055933336}
   - component: {fileID: 1055933337}
+  - component: {fileID: 1055933338}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2495,7 +2524,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.PlayerInteract
   inputActionAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   keyCollector: {fileID: 1055933335}
+  objectHandler: {fileID: 1055933337}
+  hpHandler: {fileID: 1055933338}
   interactRange: 5
+  collectLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &1055933337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2511,6 +2545,18 @@ MonoBehaviour:
   inputActionAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   objectHolder: {fileID: 121507287}
   throwForce: 750
+--- !u!114 &1055933338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055933331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b6ba355c34f8e117a6fb3bb49982090, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HP_Handler
 --- !u!1 &1088421939
 GameObject:
   m_ObjectHideFlags: 0
@@ -2936,6 +2982,7 @@ MonoBehaviour:
   keysText: {fileID: 1298533556}
   stonesBar: {fileID: 1359701320}
   stonesText: {fileID: 1521435791}
+  hpBar: {fileID: 1246229192}
   indicationText: {fileID: 1382626760}
 --- !u!1 &1298533554
 GameObject:
@@ -4021,7 +4068,7 @@ GameObject:
   - component: {fileID: 1619574446}
   m_Layer: 0
   m_Name: Enemy Visual
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

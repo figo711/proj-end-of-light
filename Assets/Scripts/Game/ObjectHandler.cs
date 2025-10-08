@@ -57,5 +57,12 @@ namespace Game
             stone.GetComponent<Rigidbody>().AddForce(
                 Camera.main.transform.forward * throwForce);
         }
+
+        public void AddStone()
+        {
+            objectHolder.gameObject.SetActive(true);
+            _objectCount += 1;
+            HUD_Handler.Instance.UpdateStones(_objectCount);
+        }
     }
 }

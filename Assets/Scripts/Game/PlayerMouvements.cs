@@ -201,7 +201,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (ctx.performed && _staminaValue > 0.5f)
         {
-            playerCamera.DOFieldOfView(85f, 0.5f);
+            playerCamera.DOFieldOfView(75f, 0.5f);
         }
         else if (ctx.canceled)
         {

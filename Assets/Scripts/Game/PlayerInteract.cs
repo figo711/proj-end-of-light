@@ -11,8 +11,11 @@ namespace Game
 
         [Header("KeyCollector")]
         [SerializeField] private KeyCollector keyCollector;
+        [SerializeField] private ObjectHandler objectHandler;
+        [SerializeField] private HP_Handler hpHandler;
 
         [SerializeField] private float interactRange; // 5f
+        [SerializeField] private LayerMask collectLayer;
 
         private InputAction _interactAction;
 
@@ -60,12 +63,22 @@ namespace Game
             {
                 HUD_Handler.Instance.HideMsg();
             }
+
+            Camera cam = Camera.main;
+            Ray ray = new(cam.transform.position, cam.transform.forward);
+
+            if (Physics.Raycast(ray, out RaycastHit _, interactRange, collectLayer))
+            {
+                HUD_Handler.Instance.ShowMsg("Use 'F' to take.");
+            }
         }
 
         private void OnInteract(InputAction.CallbackContext ctx)
         {
-            if (Physics.Raycast(
-                transform.position, transform.forward, out RaycastHit hit, interactRange))
+            Camera cam = Camera.main;
+            Ray ray = new(cam.transform.position, cam.transform.forward);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, interactRange))
             {
                 if (hit.transform.gameObject.CompareTag("ExitDoor"))
                 {
@@ -73,6 +86,21 @@ namespace Game
                     {
                         hit.transform.DOMoveY(9, 2f);
                     }
+                }
+
+                if (hit.transform.gameObject.CompareTag("Bonus"))
+                {
+                    hit.transform.gameObject.SetActive(false);
+                    if (Random.value > 0.5f)
+                    {
+                        hpHandler.Heal(25);
+                    }
+                }
+
+                if (hit.transform.gameObject.CompareTag("Stone"))
+                {
+                    hit.transform.gameObject.SetActive(false);
+                    objectHandler.AddStone();
                 }
             }
         }
