@@ -2208,7 +2208,6 @@ GameObject:
   m_Component:
   - component: {fileID: 926443392}
   - component: {fileID: 926443393}
-  - component: {fileID: 926443395}
   - component: {fileID: 926443394}
   m_Layer: 0
   m_Name: Enemy
@@ -2227,7 +2226,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 54, y: 2, z: 54}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1619574449}
@@ -2242,8 +2241,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 926443391}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
-  m_Speed: 5
+  m_Radius: 1.5
+  m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -2267,33 +2266,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb8752bff5ba39fc84d0f5e9ac24646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAgent
---- !u!54 &926443395
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926443391}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1001 &978094119
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2526,6 +2498,7 @@ MonoBehaviour:
   keyCollector: {fileID: 1055933335}
   objectHandler: {fileID: 1055933337}
   hpHandler: {fileID: 1055933338}
+  pMovement: {fileID: 1055933332}
   interactRange: 5
   collectLayer:
     serializedVersion: 2
@@ -3810,6 +3783,8 @@ MonoBehaviour:
   continueBtn: {fileID: 978094121}
   optionsBtn: {fileID: 347686211}
   quitBtn: {fileID: 169342822}
+  endPanel: {fileID: 1183501271}
+  endGameText: {fileID: 485364899}
 --- !u!1 &1489743717
 GameObject:
   m_ObjectHideFlags: 0
@@ -4088,7 +4063,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2

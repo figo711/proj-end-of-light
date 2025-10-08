@@ -38,6 +38,6 @@ namespace Game
             }
             else
                 _agent.SetDestination(_startPosition);
-}
+        }
     }
 }

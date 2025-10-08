@@ -25,12 +25,20 @@ namespace Game
             HUD_Handler.Instance.UpdateHP(_health);
         }
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnTriggerEnter(Collider collider)
         {
-            if (collision.gameObject.CompareTag("Enemy"))
+            if (collider.gameObject.CompareTag("Enemy"))
             {
-                _health -= MAX_HP / 2;
+                _health -= MAX_HP / 4;
+                HUD_Handler.Instance.UpdateHP(_health);
                 // TODO: Add bounce from BOSS
+
+                if (_health <= 0)
+                {
+                    _health = 0;
+                    HUD_Handler.Instance.UpdateHP(_health);
+                    PauseMenu.Instance.EndGame(false);
+                }
             }
         }
     }

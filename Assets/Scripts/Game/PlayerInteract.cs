@@ -13,6 +13,7 @@ namespace Game
         [SerializeField] private KeyCollector keyCollector;
         [SerializeField] private ObjectHandler objectHandler;
         [SerializeField] private HP_Handler hpHandler;
+        [SerializeField] private PlayerMovement pMovement;
 
         [SerializeField] private float interactRange; // 5f
         [SerializeField] private LayerMask collectLayer;
@@ -95,6 +96,10 @@ namespace Game
                     {
                         hpHandler.Heal(25);
                     }
+                    else
+                    {
+                        pMovement.crouchSpeed += 0.5f;
+                    }
                 }
 
                 if (hit.transform.gameObject.CompareTag("Stone"))
@@ -109,7 +114,7 @@ namespace Game
         {
             if (other.CompareTag("ExitTrigger"))
             {
-                print("WIN !!!");
+                PauseMenu.Instance.EndGame(true);
             }
         }
 
