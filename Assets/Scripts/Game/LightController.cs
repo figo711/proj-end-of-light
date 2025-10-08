@@ -14,6 +14,16 @@ namespace Game
         private bool _isLit;
 
         public bool IsLit => _isLit;
+        public float LightOnDuration
+        {
+            get => lightOnDuration;
+            set => lightOnDuration = value;
+        }
+        public float LightOffDuration
+        {
+            get => lightOffDuration;
+            set => lightOffDuration = value;
+        }
 
         private void Start()
         {

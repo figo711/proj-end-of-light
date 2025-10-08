@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4479081655362353494}
   - component: {fileID: 7620081086187867297}
   - component: {fileID: 297016231925572268}
+  - component: {fileID: 110698315554441234}
   m_Layer: 9
   m_Name: Stone
   m_TagString: Stone
@@ -139,3 +140,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &110698315554441234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7167445123200920082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6401008ea58b5741bf34a1150760569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.StoneEffect
