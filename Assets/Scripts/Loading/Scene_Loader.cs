@@ -43,7 +43,11 @@ namespace Loading
         {
             // yield return new WaitForSecondsRealtime(1.0f);
 
+            pgbar.UpdateBar(0);
+
             yield return new WaitUntil(() => _interactAction.triggered);
+
+            pgbar.UpdateBar(90);
 
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneName);
 

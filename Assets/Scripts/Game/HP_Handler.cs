@@ -28,7 +28,7 @@ namespace Game
 
             _timer = new FloatTimer(0.75f, () =>
             {
-                _health -= 3;
+                _health -= 1;
                 HUD_Handler.Instance.UpdateHP(_health);
 
                 if (_health <= 0)
