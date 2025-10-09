@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using Shared;
@@ -7,9 +8,16 @@ namespace Loading
 {
     public class Scene_Loader : MonoBehaviour
     {
+        [SerializeField] private InputActionAsset inputActionAsset;
         [SerializeField] private ProgressBar_Handler pgbar;
 
         private string _sceneName;
+        private InputAction _interactAction;
+
+        private void Awake()
+        {
+            _interactAction = inputActionAsset.FindAction("Interact");
+        }
 
         private void Start()
         {
@@ -20,9 +28,22 @@ namespace Loading
             StartCoroutine(LoadProc());
         }
 
+        private void OnEnable()
+        {
+            _interactAction.Enable();
+        }
+
+        private void OnDisable()
+        {
+            _interactAction.Disable();
+        }
+
+
         private IEnumerator LoadProc()
         {
-            yield return new WaitForSecondsRealtime(1.0f);
+            // yield return new WaitForSecondsRealtime(1.0f);
+
+            yield return new WaitUntil(() => _interactAction.triggered);
 
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneName);
 

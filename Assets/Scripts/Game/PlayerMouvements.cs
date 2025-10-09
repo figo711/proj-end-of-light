@@ -138,6 +138,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (_isRunning)
             {
+                PlayerSounds.Instance.OnRun();
                 _staminaValue -= Time.deltaTime;
                 HUD_Handler.Instance.UpdateStamina(_staminaValue);
 
@@ -152,6 +153,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
+                PlayerSounds.Instance.OnWalk();
                 if (!canRun)
                 {
                     var dt = Time.deltaTime * 2;
@@ -184,6 +186,7 @@ public class PlayerMovement : MonoBehaviour
         // Attention : modifier la hauteur du CharacterController peut nécessiter d'ajuster aussi le center
         if (_crouchAction.IsPressed() && canMove)
         {
+            PlayerSounds.Instance.OnCrouch();
             characterController.height = crouchHeight; // réduit la hauteur du CharacterController
             walkSpeed = crouchSpeed;                   // réduit la vitesse de marche
             runSpeed = crouchSpeed;                    // empêche de courir (cours = vitesse d'accroupissement)

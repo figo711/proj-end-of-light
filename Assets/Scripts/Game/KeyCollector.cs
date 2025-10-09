@@ -17,6 +17,7 @@ namespace Game
         {
             if (other.CompareTag("Key"))
             {
+                PlayerSounds.Instance.OnPickKey();
                 other.enabled = false;
                 other.gameObject.SetActive(false);
                 keyCount += 1;
