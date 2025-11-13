@@ -17,6 +17,7 @@ namespace Game
         private GameObject[] _keys;
 
         private bool _distraction;
+        private bool _waitForRegenerate;
 
         private void Awake()
         {
@@ -25,6 +26,22 @@ namespace Game
             _agent = GetComponent<NavMeshAgent>();
             _startPosition = transform.position;
             _distraction = false;
+            _waitForRegenerate = false;
+        }
+
+        private void Start()
+        {
+            EventEmitter.Instance.On(GameEvent.OnRegenerateStart, OnRegenerateStarted);
+            EventEmitter.Instance.On(GameEvent.OnRegenerateEnd, OnRegenerateEnded);
+        }
+
+        private void OnRegenerateStarted() => _waitForRegenerate = true;
+        private void OnRegenerateEnded() => _waitForRegenerate = false;
+
+        private void OnDestroy()
+        {
+            EventEmitter.Instance.Off(GameEvent.OnRegenerateStart, OnRegenerateStarted);
+            EventEmitter.Instance.Off(GameEvent.OnRegenerateEnd, OnRegenerateEnded);
         }
 
         public void Setup()
@@ -42,7 +59,7 @@ namespace Game
                 return;
             }
 
-            if (_distraction) return;
+            if (_distraction || _waitForRegenerate) return;
 
             if (pMovement.IsRunning)
             {
@@ -52,7 +69,7 @@ namespace Game
 
         private void LateUpdate()
         {
-            if (_agent.hasPath || _agent.pathPending || _distraction)
+            if (_agent.hasPath || _agent.pathPending || _distraction || _waitForRegenerate)
                 return;
 
             var newPlace = _keys[Random.Range(0, _keys.Length)].transform.position;
