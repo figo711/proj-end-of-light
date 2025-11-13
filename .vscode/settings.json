@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "proj-end-of-light.sln"
+    "dotnet.defaultSolution": "Project_EndOfLight.sln"
 }
