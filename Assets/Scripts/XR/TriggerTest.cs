@@ -1,35 +1,50 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // Nécessaire pour interagir avec le nouveau système d'entrée (Input System)
+using UnityEngine.InputSystem; 
 
 /// <summary>
-/// Ce script écoute l'état du bouton Trigger (Gâchette) droit 
-/// et exécute une action lorsque le bouton est pressé.
+/// Ce script écoute l'état du bouton Trigger (Gâchette) droit
+/// et détruit les objets "Mur" (par Tag ou Layer) lorsque le bouton est pressé.
 /// </summary>
 public class TriggerTest : MonoBehaviour
 {
     [Tooltip("Référence à l'Action que nous voulons écouter (ex: RightHand/Trigger).")]
-    // L'objet InputActionReference doit être lié dans l'inspecteur Unity.
     public InputActionReference triggerAction = null;
+
+    // --- NOUVELLES VARIABLES ---
+    [Header("Paramètres de Destruction")]
+    [Tooltip("Le Transform de la manette (d'où part le rayon).")]
+    public Transform controllerTransform; // À glisser dans l'Inspecteur
+
+    [Tooltip("La distance maximale du rayon.")]
+    public float laserRange = 10f;
+
+    [Tooltip("Le Layer (Calque) des murs à détruire.")]
+    public LayerMask wallLayer; // À sélectionner dans l'Inspecteur
+    // --- FIN DES NOUVELLES VARIABLES ---
 
     private void Awake()
     {
-        // Vérifie si l'action est définie pour éviter les erreurs.
+        // Vérifie si l'action est définie
         if (triggerAction != null && triggerAction.action != null)
         {
-            // Abonne la méthode HandleTrigger à l'événement 'performed' (quand l'action est déclenchée)
             triggerAction.action.performed += HandleTrigger;
-            // Démarre l'écoute de l'action
             triggerAction.action.Enable();
         }
         else
         {
-            Debug.LogError("L'action du Trigger n'est pas configurée dans l'Inspecteur pour TriggerTest sur " + gameObject.name);
+            Debug.LogError("L'action du Trigger n'est pas configurée dans l'Inspecteur.");
+        }
+
+        // Vérification de sécurité pour la nouvelle variable
+        if (controllerTransform == null)
+        {
+            Debug.LogError("Le 'Controller Transform' n'est pas assigné. Le rayon ne partira de nulle part.");
         }
     }
 
     private void OnDestroy()
     {
-        // Très important : Désabonner la méthode pour éviter les fuites de mémoire (memory leaks) et les erreurs.
+        // Désabonner la méthode
         if (triggerAction != null && triggerAction.action != null)
         {
             triggerAction.action.performed -= HandleTrigger;
@@ -41,12 +56,41 @@ public class TriggerTest : MonoBehaviour
     /// </summary>
     private void HandleTrigger(InputAction.CallbackContext context)
     {
-        // L'action se déclenche une fois le bouton pressé. 
-        // Si vous voulez un événement continu (tant que le bouton est enfoncé), vous utiliseriez 'started' et 'canceled'.
+        // Sécurité : si le transform n'est pas assigné, on ne fait rien.
+        if (controllerTransform == null) return;
 
-        Debug.Log("===============================================");
-        Debug.Log($"Action de la gâchette droite déclenchée ! Valeur: {context.ReadValue<float>()}");
-        Debug.Log("Félicitations, votre input VR fonctionne !");
-        Debug.Log("===============================================");
+        // On lance un rayon (Raycast) depuis la position de la manette, vers l'avant
+        RaycastHit hit;
+        if (Physics.Raycast(controllerTransform.position, controllerTransform.forward, out hit, laserRange))
+        {
+            // Le rayon a touché quelque chose. On vérifie si c'est un mur.
+            
+            // Condition 1 : L'objet a le tag "Wall"
+            bool hasWallTag = hit.transform.CompareTag("Wall");
+
+            // Condition 2 : L'objet est sur le Layer "wall" (que vous avez défini dans wallLayer)
+            // (1 << hit.collider.gameObject.layer) crée un masque binaire pour le layer de l'objet touché
+            // On vérifie s'il correspond au masque que vous avez réglé dans l'inspecteur
+            bool isOnWallLayer = (wallLayer.value & (1 << hit.collider.gameObject.layer)) > 0;
+
+            if (hasWallTag || isOnWallLayer)
+            {
+                // C'est un mur ! On le détruit.
+                Destroy(hit.transform.gameObject);
+                
+                // Message de succès dans la console
+                Debug.Log($"================ MUR DÉTRUIT ================ \nNom de l'objet : {hit.transform.name}");
+            }
+            else
+            {
+                // On a touché quelque chose, mais ce n'est pas un mur.
+                Debug.Log($"Action déclenchée : Touché {hit.transform.name}, mais ce n'est pas un mur.");
+            }
+        }
+        else
+        {
+            // Le rayon n'a rien touché.
+            Debug.Log("Action déclenchée : Rien n'a été touché.");
+        }
     }
 }
