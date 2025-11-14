@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem; 
+using Unity.AI.Navigation;
 
 /// <summary>
 /// Ce script écoute l'état du bouton Trigger (Gâchette) droit
 /// et détruit les objets "Mur" (par Tag ou Layer) lorsque le bouton est pressé.
 /// </summary>
-public class TriggerTest : MonoBehaviour
+public class DestroyWall : MonoBehaviour
 {
     [Tooltip("Référence à l'Action que nous voulons écouter (ex: RightHand/Trigger).")]
     public InputActionReference triggerAction = null;
@@ -21,6 +22,8 @@ public class TriggerTest : MonoBehaviour
     [Tooltip("Le Layer (Calque) des murs à détruire.")]
     public LayerMask wallLayer; // À sélectionner dans l'Inspecteur
     // --- FIN DES NOUVELLES VARIABLES ---
+    [Tooltip("Référence au NavMeshSurface à reconstruire après destruction.")]
+    [SerializeField] private NavMeshSurface navMeshSurface;
 
     private void Awake()
     {
@@ -77,6 +80,8 @@ public class TriggerTest : MonoBehaviour
             {
                 // C'est un mur ! On le détruit.
                 Destroy(hit.transform.gameObject);
+                navMeshSurface.BuildNavMesh();
+
                 
                 // Message de succès dans la console
                 Debug.Log($"================ MUR DÉTRUIT ================ \nNom de l'objet : {hit.transform.name}");
