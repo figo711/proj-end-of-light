@@ -1,4 +1,6 @@
+using System.Collections;
 using DG.Tweening;
+using Figo.Mazes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +8,8 @@ namespace Game
 {
     public class PlayerInteract : MonoBehaviour
     {
+        [SerializeField] private MazeGenerator mazeGenerator;
+
         [Header("Input")]
         [SerializeField] private InputActionAsset inputActionAsset;
 
@@ -19,33 +23,41 @@ namespace Game
         [SerializeField] private LayerMask collectLayer;
 
         private InputAction _interactAction;
+        private InputAction _debugTestAction;
 
         private GameObject _exitDoor;
 
         private void Awake()
         {
             _interactAction = inputActionAsset.FindAction("Interact");
+            _debugTestAction = inputActionAsset.FindAction("DEBUG_KEY");
 
             _interactAction.performed += OnInteract;
+            _debugTestAction.performed += OnDebugKey;
         }
 
         private void OnDestroy()
         {
             _interactAction.performed -= OnInteract;
+            _debugTestAction.performed -= OnDebugKey;
         }
 
         private void OnEnable()
         {
             _interactAction.Enable();
+            _debugTestAction.Enable();
         }
 
         private void OnDisable()
         {
             _interactAction.Disable();
+            _debugTestAction.Disable();
         }
 
         private void LateUpdate()
         {
+            if (_exitDoor == null) return;
+            
             var _dist = Vector3.Distance(
                 _exitDoor.transform.position, transform.position);
 
@@ -108,6 +120,13 @@ namespace Game
                     objectHandler.AddStone();
                 }
             }
+        }
+
+        private void OnDebugKey(InputAction.CallbackContext ctx)
+        {
+            mazeGenerator.Regenerate();
+
+            print("Regenerated Level");
         }
 
         private void OnTriggerEnter(Collider other)
