@@ -27,16 +27,17 @@ namespace Game
             _startPosition = transform.position;
             _distraction = false;
             _waitForRegenerate = false;
-        }
 
-        private void Start()
-        {
             EventEmitter.Instance.On(GameEvent.OnRegenerateStart, OnRegenerateStarted);
             EventEmitter.Instance.On(GameEvent.OnRegenerateEnd, OnRegenerateEnded);
         }
 
         private void OnRegenerateStarted() => _waitForRegenerate = true;
-        private void OnRegenerateEnded() => _waitForRegenerate = false;
+        private void OnRegenerateEnded()
+        {
+            Setup();
+            _waitForRegenerate = false;
+        }
 
         private void OnDestroy()
         {

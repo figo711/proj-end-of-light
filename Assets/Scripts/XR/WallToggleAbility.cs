@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
-using System.Collections; // NOUVEAU: Nécessaire pour les Coroutines
+using System.Collections;
+using Figo.Mazes; // NOUVEAU: Nécessaire pour les Coroutines
 
 /// <summary>
 /// Gère un Grab/Collect via Raycast (Laser) qui s'active à la pression de la gâchette,
@@ -22,22 +23,25 @@ public class WallToggleAbility : MonoBehaviour
     [Header("Paramètres du Laser/Grab")]
     [Tooltip("Distance maximale du laser.")]
     public float laserRange = 10f;
-    
+
     [Tooltip("Définit quels objets peuvent être détectés (Layer 'Grabbable').")]
     public LayerMask grabbableLayer;
 
     [Header("Fonctionnalité Mur")]
     [Tooltip("Durée de la désactivation des murs (en secondes).")]
     public float toggleDuration = 2.0f; // NOUVEAU
-    
+
+    [SerializeField] private MazeGenerator mazeGenerator;
+
     // NOUVEAU : État pour éviter de relancer l'effet si déjà en cours
-    private bool isTogglingWalls = false; 
+    private bool isTogglingWalls = false;
+    private bool isRegenerateLevel = false;
 
     // Variables privées pour le grab
     private Transform grabbedObject = null;
     private Rigidbody grabbedRigidbody = null;
     private bool originalRigidbodyState;
-    private bool isTriggerDown = false; 
+    private bool isTriggerDown = false;
 
     private void Awake()
     {
@@ -56,7 +60,7 @@ public class WallToggleAbility : MonoBehaviour
         {
             Debug.LogError("Le 'Controller Transform' n'est pas assigné.");
         }
-        
+
         // --- Configuration du LineRenderer ---
         if (laserLine == null)
         {
@@ -83,20 +87,20 @@ public class WallToggleAbility : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (controllerTransform == null || laserLine == null || !isTriggerDown || grabbedObject != null) 
+        if (controllerTransform == null || laserLine == null || !isTriggerDown || grabbedObject != null)
         {
-            if(laserLine != null) laserLine.enabled = false;
+            if (laserLine != null) laserLine.enabled = false;
             return;
         }
-        
+
         if (!laserLine.enabled)
         {
             laserLine.enabled = true;
         }
-        
+
         Vector3 startPosition = controllerTransform.position;
         Vector3 endPosition;
-        
+
         RaycastHit hit;
         if (Physics.Raycast(startPosition, controllerTransform.forward, out hit, laserRange, grabbableLayer))
         {
@@ -107,8 +111,8 @@ public class WallToggleAbility : MonoBehaviour
             endPosition = startPosition + controllerTransform.forward * laserRange;
         }
 
-        laserLine.SetPosition(0, startPosition); 
-        laserLine.SetPosition(1, endPosition); 
+        laserLine.SetPosition(0, startPosition);
+        laserLine.SetPosition(1, endPosition);
     }
 
     /// <summary>
@@ -118,22 +122,14 @@ public class WallToggleAbility : MonoBehaviour
     {
         isTriggerDown = true;
 
-        if (controllerTransform == null) return; 
-        if (grabbedObject != null) return; 
+        if (controllerTransform == null) return;
+        if (grabbedObject != null) return;
 
         // --- LOGIQUE DE RAYCAST POUR LE GRAB ---
         RaycastHit hit;
         if (Physics.Raycast(controllerTransform.position, controllerTransform.forward, out hit, laserRange, grabbableLayer))
         {
             Transform hitTransform = hit.transform;
-            
-            // DÉCLENCHEMENT : Si nous touchons quelque chose, on active la désactivation de murs
-            if (!isTogglingWalls)
-            {
-                // NOUVEAU: Lance la Coroutine
-                StartCoroutine(ToggleWalls()); 
-            }
-            
             // Haptique au moment du grab/collect (Doit être dans une fonction de support)
             // (La fonction TriggerHaptics doit être ajoutée ou déclarée ici pour que ça compile.)
             // TriggerHaptics(context.control.device); 
@@ -143,15 +139,25 @@ public class WallToggleAbility : MonoBehaviour
             {
                 Debug.Log($"Objet collecté (Laser) : {hitTransform.name}");
                 Destroy(hitTransform.gameObject);
+
+                if (hitTransform.CompareTag("Key") && !isRegenerateLevel)
+                {
+                    StartCoroutine(RegenerateLevel());
+                }
+
+                if (hitTransform.CompareTag("Bonus") && !isTogglingWalls)
+                {
+                    StartCoroutine(ToggleWalls());
+                }
             }
             // Logique de Grab Normal
             else
             {
                 Debug.Log($"Objet normal saisi (Laser) : {hitTransform.name}");
-                
+
                 grabbedObject = hitTransform;
-                grabbedRigidbody = hitTransform.GetComponent<Rigidbody>(); 
-                grabbedObject.SetParent(controllerTransform); 
+                grabbedRigidbody = hitTransform.GetComponent<Rigidbody>();
+                grabbedObject.SetParent(controllerTransform);
 
                 if (grabbedRigidbody != null)
                 {
@@ -160,20 +166,20 @@ public class WallToggleAbility : MonoBehaviour
                 }
             }
         }
-    } 
+    }
 
     /// <summary>
     /// Méthode appelée lorsque l'action de Grab SE TERMINE (bouton relâché).
     /// </summary>
     private void HandleGrabCanceled(InputAction.CallbackContext context)
     {
-        isTriggerDown = false; 
+        isTriggerDown = false;
 
         if (grabbedObject != null)
         {
             Debug.Log($"Relâchement de : {grabbedObject.name}");
             grabbedObject.SetParent(null);
-            
+
             if (grabbedRigidbody != null)
             {
                 grabbedRigidbody.isKinematic = originalRigidbodyState;
@@ -192,34 +198,34 @@ public class WallToggleAbility : MonoBehaviour
     {
         isTogglingWalls = true; // Empêche de relancer l'effet
 
-        // On utilise le Tag "Wall" pour trouver tous les murs
-        GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
-
         // 1. Désactiver tous les murs
-        SetWallsActive(walls, false);
-        Debug.Log($"Désactivation de {walls.Length} murs pendant {toggleDuration} secondes.");
+        mazeGenerator.ToggleInnerWalls(false);
+        Debug.Log($"Désactivation des murs pendant {toggleDuration} secondes.");
 
         // 2. Attendre
         yield return new WaitForSeconds(toggleDuration);
 
         // 3. Réactiver tous les murs
-        SetWallsActive(walls, true);
+        mazeGenerator.ToggleInnerWalls(true);
         Debug.Log("Réactivation des murs.");
 
         isTogglingWalls = false; // L'effet est terminé
     }
 
     /// <summary>
-    /// Fonction utilitaire pour activer/désactiver les murs.
+    /// Coroutine pour gérer l'activation et la désactivation temporaire des murs.
     /// </summary>
-    private void SetWallsActive(GameObject[] walls, bool state)
+    private IEnumerator RegenerateLevel()
     {
-        foreach (GameObject wall in walls)
-        {
-            if (wall != null)
-            {
-                wall.SetActive(state);
-            }
-        }
+        isRegenerateLevel = true;
+
+        mazeGenerator.ToggleInnerWalls(false);
+
+        yield return new WaitForSeconds(toggleDuration);
+
+        mazeGenerator.Regenerate();
+        print("Regenerate Done !");
+
+        isRegenerateLevel = false;
     }
 }

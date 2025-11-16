@@ -12,19 +12,27 @@ public enum GameEvent
     OnRegenerateEnd,
 }
 
-public class EventEmitter
+public class EventEmitter : MonoBehaviour
 {
     // Dictionnaire pour stocker les abonnements. 
     // Key: Le nom de l'événement (Enum).
     // Value: La méthode à appeler (Action, ici sans argument pour la simplicité).
-    private readonly Dictionary<GameEvent, Action> eventDictionary = new Dictionary<GameEvent, Action>();
+    private readonly Dictionary<GameEvent, Action> eventDictionary = new();
 
     // Rendre l'EventEmitter un Singleton si vous voulez un accès global
-    public static EventEmitter Instance { get; } = new EventEmitter();
-    
-    // Constructeur privé pour le Singleton
-    private EventEmitter() { }
-    
+    public static EventEmitter Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
     // --- Méthode .on() (Abonnement) ---
     public void On(GameEvent eventName, Action listener)
     {
@@ -49,10 +57,11 @@ public class EventEmitter
         {
             // Déclencher toutes les méthodes abonnées
             // L'Action est nulle si personne n'est abonné, mais TryGetValue gère déjà ça
-            thisEvent?.Invoke(); 
+            Debug.Log($"EMIT : {eventName}");
+            thisEvent?.Invoke();
         }
     }
-    
+
     // --- Méthode .off() (Désabonnement) ---
     public void Off(GameEvent eventName, Action listener)
     {

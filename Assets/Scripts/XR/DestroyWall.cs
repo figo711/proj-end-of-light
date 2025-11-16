@@ -1,6 +1,7 @@
 using UnityEngine;
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 using Unity.AI.Navigation;
+using Figo.Mazes;
 
 /// <summary>
 /// Ce script écoute l'état du bouton Trigger (Gâchette) droit
@@ -24,6 +25,8 @@ public class DestroyWall : MonoBehaviour
     // --- FIN DES NOUVELLES VARIABLES ---
     [Tooltip("Référence au NavMeshSurface à reconstruire après destruction.")]
     [SerializeField] private NavMeshSurface navMeshSurface;
+
+    [SerializeField] private MazeGenerator mazeGenerator;
 
     private void Awake()
     {
@@ -67,7 +70,7 @@ public class DestroyWall : MonoBehaviour
         if (Physics.Raycast(controllerTransform.position, controllerTransform.forward, out hit, laserRange))
         {
             // Le rayon a touché quelque chose. On vérifie si c'est un mur.
-            
+
             // Condition 1 : L'objet a le tag "Wall"
             bool hasWallTag = hit.transform.CompareTag("Wall");
 
@@ -78,11 +81,10 @@ public class DestroyWall : MonoBehaviour
 
             if (hasWallTag || isOnWallLayer)
             {
-                // C'est un mur ! On le détruit.
-                Destroy(hit.transform.gameObject);
+                mazeGenerator.HideSpecificWall(hit.transform.gameObject);
                 navMeshSurface.BuildNavMesh();
 
-                
+
                 // Message de succès dans la console
                 Debug.Log($"================ MUR DÉTRUIT ================ \nNom de l'objet : {hit.transform.name}");
             }

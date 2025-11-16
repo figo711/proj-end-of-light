@@ -471,6 +471,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   navMeshSurface: {fileID: 862481941}
+  mazeGenerator: {fileID: 667785546}
 --- !u!1 &239364206
 GameObject:
   m_ObjectHideFlags: 0
@@ -803,6 +804,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!1 &361341709
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 361341710}
+  - component: {fileID: 361341711}
+  m_Layer: 0
+  m_Name: EventEmitter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &361341710
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361341709}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1327435270}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &361341711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361341709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e99d342d11a579f0696ef9334da7772a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventEmitter
 --- !u!114 &377638881 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6640002710935096923, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -1901,8 +1946,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72c7ff4a0e5a06b60bb22bb03289933b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MazeGenerator
-  overlapWfc: {fileID: 0}
-  secondPassWfc: {fileID: 0}
+  overlapWfc: {fileID: 2141831984}
+  secondPassWfc: {fileID: 2141831983}
   playerInteract: {fileID: 1055933336}
   navMeshSurface: {fileID: 862481941}
   enemyAgent: {fileID: 926443394}
@@ -2649,7 +2694,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &926443392
 Transform:
   m_ObjectHideFlags: 0
@@ -3357,6 +3402,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6480925242510836759, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347985736721345035, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7983627650908746089, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -3694,13 +3747,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 842336299}
     m_Modifications:
+    - target: {fileID: 6900676903622151380, guid: 58d0a4ac86f2348deb02f3880c71378e, type: 3}
+      propertyPath: m_TranslateXSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6900676903622151380, guid: 58d0a4ac86f2348deb02f3880c71378e, type: 3}
+      propertyPath: m_TranslateZSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8135023674665499069, guid: 58d0a4ac86f2348deb02f3880c71378e, type: 3}
       propertyPath: m_Name
       value: XR Interaction Simulator
       objectReference: {fileID: 0}
     - target: {fileID: 8135023674665499069, guid: 58d0a4ac86f2348deb02f3880c71378e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8518324294302271954, guid: 58d0a4ac86f2348deb02f3880c71378e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4332,6 +4393,7 @@ Transform:
   - {fileID: 667785545}
   - {fileID: 1471675185}
   - {fileID: 1278993040}
+  - {fileID: 361341710}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1359701318
@@ -5279,7 +5341,7 @@ GameObject:
   - component: {fileID: 1619574448}
   - component: {fileID: 1619574447}
   - component: {fileID: 1619574450}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Enemy Visual
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -5938,6 +6000,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1536
   toggleDuration: 2
+  mazeGenerator: {fileID: 667785546}
 --- !u!120 &1856008445 stripped
 LineRenderer:
   m_CorrespondingSourceObject: {fileID: 8108794592199166444, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -6007,6 +6070,85 @@ MonoBehaviour:
     m_ObjectReferenceObject: {fileID: 0}
     m_ManualValue: {x: 0, y: 0}
   m_UseGravity: 1
+--- !u!1001 &2141831982
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2170693497214165818, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_Name
+      value: --------------  WFC  --------------
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -306
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2437408122676100793, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+--- !u!114 &2141831983 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8212783762092121288, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+  m_PrefabInstance: {fileID: 2141831982}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b5a5fbf10d47f862822417d96fc8343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Figo.Mazes.SecondPassWFC
+--- !u!114 &2141831984 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 801317659947180596, guid: 0e21485ccdbe0044ba7c87525f318a41, type: 3}
+  m_PrefabInstance: {fileID: 2141831982}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 733115f9ddabf4ac6b24ba84cc1d0fb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OverlapWFC
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -6018,3 +6160,4 @@ SceneRoots:
   - {fileID: 887750352}
   - {fileID: 121507287}
   - {fileID: 842336299}
+  - {fileID: 2141831982}

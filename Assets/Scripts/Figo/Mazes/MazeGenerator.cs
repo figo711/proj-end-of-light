@@ -51,6 +51,55 @@ namespace Figo.Mazes
             EventEmitter.Instance.Emit(GameEvent.OnRegenerateEnd);
         }
 
+        public void HideSpecificWall(GameObject go)
+        {
+            var parent = go.transform.parent;
+
+            var x = Mathf.RoundToInt(parent.position.x / _tileSize);
+            var y = Mathf.RoundToInt(parent.position.z / _tileSize);
+
+            if (go.name == "WallLeft")
+            {
+                if (x - 1 < 0) return;
+                if (x + 1 > _width) return;
+
+                grid[x, y].WallLeft = false;
+            }
+            if (go.name == "WallBottom")
+            {
+                if (y - 1 < 0) return;
+                if (y + 1 > _height) return;
+
+                grid[x, y].WallBottom = false;
+            }
+
+            go.SetActive(false);
+        }
+
+        public void ToggleInnerWalls(bool value)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                for (int x = 0; x < _width; x++)
+                {
+                    var cell = grid[x, y];
+                    var cellObj = cell.Floor;
+                    Transform wallLeft = cellObj.transform.Find("WallLeft");
+                    Transform wallBottom = cellObj.transform.Find("WallBottom");
+
+                    if (cell.WallLeft && (x - 1 >= 0 && x + 1 <= _width))
+                    {
+                        wallLeft.gameObject.SetActive(value);
+                    }
+
+                    if (cell.WallBottom && (y - 1 >= 0 && y + 1 <= _height))
+                    {
+                        wallBottom.gameObject.SetActive(value);
+                    }
+                }
+            }
+        }
+
         private void BuildMazeWithTiles()
         {
             for (int y = 0; y <= _height; y++)
@@ -124,8 +173,8 @@ namespace Figo.Mazes
             overlapWfc.Generate();
             overlapWfc.Run();
             grid = secondPassWfc.FixMaze();
-        } 
-        
+        }
+
         private void GenerateMaze()
         {
             grid = new Cell[_width, _height];
